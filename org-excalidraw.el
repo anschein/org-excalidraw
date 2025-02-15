@@ -53,10 +53,6 @@
   (let* ((raw-path (replace-regexp-in-string "^file:" "" link)) ; 去除可能的 URI 前缀
          (path (expand-file-name raw-path))) ; 转换为绝对路径
     
-    ;; 调试输出路径信息
-    (message "[DEBUG] Original link: %s" link)
-    (message "[DEBUG] Expanded path: %s" path)
-    
     ;; 验证文件扩展名
     (unless (string-suffix-p ".excalidraw" path)
       (error "Excalidraw diagrams must end with .excalidraw extension"))
