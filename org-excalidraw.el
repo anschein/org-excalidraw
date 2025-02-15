@@ -66,7 +66,7 @@
       ('darwin (shell-command (concat "open " (shell-quote-argument path))))
       ;; Windows: 直接调用固定 PWA App ID
       ('windows-nt
-      (shell-command "start \"\" \"C:/Program Files/Google/Chrome/Application/chrome.exe\" --app-id=dnfpoenibinnbbckgbhendmlljoobcfg"))
+      (shell-command "\"C:/Program Files/Google/Chrome/Application/chrome.exe\" --app-id=dnfpoenibinnbbckgbhendmlljoobcfg"))
       ;; Others
       (_ (message "Unsupported system type")))))
 
