@@ -47,29 +47,33 @@
   :type 'string)
 
 
-;;; Open, Create, Export, and Display
-;; Open
-
 (defun org-excalidraw-link-open (link)
   "Open excalidraw LINK with resource opener according to the desktop environment."
-
-  (let ((path (expand-file-name link)))
-    ;; Validate file extension
+  (interactive)
+  (let* ((raw-path (replace-regexp-in-string "^file:" "" link)) ; 去除可能的 URI 前缀
+         (path (expand-file-name raw-path))) ; 转换为绝对路径
+    
+    ;; 调试输出路径信息
+    (message "[DEBUG] Original link: %s" link)
+    (message "[DEBUG] Expanded path: %s" path)
+    
+    ;; 验证文件扩展名
     (unless (string-suffix-p ".excalidraw" path)
-      (error "Excalidraw diagrams must ends with .excaldiraw extension."))
-
-;; Open file with default application
-(pcase system-type
-  ;; Linux
-  ('gnu/linux (shell-command (concat "xdg-open " (shell-quote-argument path))))
-  ;; MacOS
-  ('darwin (shell-command (concat "open " (shell-quote-argument path))))
-  ;; Windows: 通过 cmd 的 start 命令打开文件
-  ('windows-nt
-   (shell-command
-    (concat "cmd.exe /c start \"\" " (shell-quote-argument path))))
-  ;; Others
-  (_ (message "Unsupported system type"))))
+      (error "Excalidraw diagrams must end with .excalidraw extension"))
+    
+    ;; 验证文件存在性
+    (unless (file-exists-p path)
+      (error "File not found: %s" path))
+    
+    ;; 打开文件
+    (pcase system-type
+      ('gnu/linux (shell-command (concat "xdg-open " (shell-quote-argument path)))
+      ('darwin (shell-command (concat "open " (shell-quote-argument path))))
+      ('windows-nt
+       (let ((win-path (replace-regexp-in-string "/" "\\\\" path))) ; 转换为 Windows 路径风格
+         (shell-command
+          (concat "cmd.exe /c start \"\" " (shell-quote-argument win-path)))))
+      (_ (message "Unsupported system type"))))))
 
 ;; Create
 
