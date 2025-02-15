@@ -58,14 +58,18 @@
     (unless (string-suffix-p ".excalidraw" path)
       (error "Excalidraw diagrams must ends with .excaldiraw extension."))
 
-    ;; Open file
+    ;; Open file or PWA
     (pcase system-type
       ;; Linux
       ('gnu/linux (shell-command (concat "xdg-open " (shell-quote-argument path))))
       ;; MacOS
       ('darwin (shell-command (concat "open " (shell-quote-argument path))))
+      ;; Windows: 直接调用固定 PWA App ID
+      ('windows-nt
+      (shell-command
+        "start \"\" \"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --app-id=dnfpoenibinnbbckgbhendmlljoobcfg"))
       ;; Others
-      (_ (message "Unsupported system type, only Linux/MacOS supported")))))
+      (_ (message "Unsupported system type")))))
 
 ;; Create
 
